@@ -6,4 +6,14 @@
 
     <string name="action_settings">Settings</string>
     <string name="Search">Search</string>
+
+    <string name="toolbar_title_my_song">My Song</string>
+    <string name="nav_music_library">Library</string>
+    <string name="nav_music_list">My List</string>
+    <string name="nav_music_folder">Folder</string>
+    <string name="nav_music_favorite">Favorite</string>
+    <string name="nav_music_recent_play">Recent Play</string>
+    <string name="nav_music_recent_add">Recent_Add</string>
+    <string name="nav_music_settings">Settings</string>
+    <string name="nav_music_exit">Exit</string>
 </resources>

@@ -4,7 +4,7 @@ package com.greenorange.vimusic.base;
  * Created by guojin.hu on 2017/3/6.
  */
 
-interface IInit {
+public interface IInit {
 
     void initData();
 

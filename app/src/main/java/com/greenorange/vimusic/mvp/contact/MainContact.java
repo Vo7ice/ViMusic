@@ -1,5 +1,7 @@
 package com.greenorange.vimusic.mvp.contact;
 
+import android.view.MenuItem;
+
 import com.greenorange.vimusic.mvp.presenter.BasePresenter;
 import com.greenorange.vimusic.mvp.view.BaseView;
 
@@ -8,11 +10,27 @@ import com.greenorange.vimusic.mvp.view.BaseView;
  */
 
 public class MainContact {
-    public interface MainPresenter extends BasePresenter{
-
+    public interface Presenter extends BasePresenter<View> {
+        void managerFragment(MenuItem item);
     }
 
-    public interface MainView extends BaseView<MainPresenter> {
+    public interface View extends BaseView<Presenter> {
+        void navigateToSettings();
 
+        void closeDrawerIfNeed();
+
+        void navigateToLibrary();
+
+        void navigateToPlayList();
+
+        void navigateToFolders();
+
+        void navigateToFavorite();
+
+        void navigateToRecentPlay();
+
+        void navigateToRecentAdd();
+
+        void exit();
     }
 }
