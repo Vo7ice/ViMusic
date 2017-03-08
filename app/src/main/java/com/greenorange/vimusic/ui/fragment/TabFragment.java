@@ -1,6 +1,7 @@
 package com.greenorange.vimusic.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.greenorange.vimusic.Constants;
 import com.greenorange.vimusic.R;
 import com.greenorange.vimusic.base.IInit;
 
@@ -26,8 +28,16 @@ public abstract class TabFragment extends Fragment implements IInit {
     @BindView(R.id.viewpager)
     ViewPager mViewpager;
 
-    private View mRootView;
+    public View mRootView;
+    protected String mAction;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mAction = getArguments().getString(Constants.NAVIGATE_PLAYLIST_TYPE);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

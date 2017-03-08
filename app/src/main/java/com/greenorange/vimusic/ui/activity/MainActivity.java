@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.greenorange.vimusic.Constants;
 import com.greenorange.vimusic.R;
 import com.greenorange.vimusic.RxBus;
 import com.greenorange.vimusic.base.BaseActivity;
 import com.greenorange.vimusic.event.ToolbarTitleEvent;
 import com.greenorange.vimusic.mvp.contact.MainContact;
 import com.greenorange.vimusic.mvp.presenter.MainPresenter;
+import com.greenorange.vimusic.ui.fragment.MainTabFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.BindView;
@@ -138,7 +142,10 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void navigateToLibrary() {
-
+        mNavView.getMenu().findItem(R.id.nav_library).setChecked(true);
+        Fragment fragment = MainTabFragment.newInstance(Constants.ACTION_NAVIGATE_ALL_SONGS);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container,fragment,Constants.ACTION_NAVIGATE_ALL_SONGS).commitAllowingStateLoss();
     }
 
     @Override

@@ -62,7 +62,6 @@ public class MainPresenter implements MainContact.Presenter {
                 break;
         }
         mCurrentTagId = id;
-        item.setChecked(true);
         mView.closeDrawerIfNeed();
     }
 }

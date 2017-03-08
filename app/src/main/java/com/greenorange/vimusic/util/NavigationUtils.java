@@ -9,7 +9,7 @@ import com.greenorange.vimusic.Constants;
  * Created by guojin.hu on 2017/3/6.
  */
 
-public class NavigationUtil {
+public class NavigationUtils {
 
 
     public static void navigateToSettings(Context context) {
