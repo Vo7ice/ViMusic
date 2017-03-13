@@ -2,10 +2,14 @@ package com.greenorange.vimusic.util;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.greenorange.vimusic.IMediaPlayBackService;
 import com.greenorange.vimusic.MediaPlayBackService;
@@ -23,6 +27,7 @@ public class MusicUtils {
     public static IMediaPlayBackService sService = null;
     private static HashMap<Context, ServiceBinder> sConnectionMap =
             new HashMap<Context, ServiceBinder>();
+    private static String sLastSdStatus = null;
 
     /**
      * service token class.
@@ -69,6 +74,111 @@ public class MusicUtils {
         MusicLogUtils.e(TAG, "Failed to bind to service");
         return null;
     }
+
+    /**
+     * Unbind the media playback service.
+     *
+     * @param token the service token.
+     */
+    public static void unbindFromService(ServiceToken token) {
+        /// M: set mLastSdStatus is null when unbind service
+        sLastSdStatus = null;
+        MusicLogUtils.v(TAG, "Reset mLastSdStatus to be null");
+        if (token == null) {
+            MusicLogUtils.e(TAG, "Trying to unbind with null token");
+            return;
+        }
+        ContextWrapper cw = token.mWrappedContext;
+        ServiceBinder sb = sConnectionMap.remove(cw);
+        if (sb == null) {
+            MusicLogUtils.e(TAG, "Trying to unbind for unknown Context");
+            return;
+        }
+        cw.unbindService(sb);
+        if (sConnectionMap.isEmpty()) {
+            // presumably there is nobody interested in the service at this point,
+            // so don't hang on to the ServiceConnection
+            sService = null;
+        }
+    }
+
+    /**
+     * Utils to query database.
+     *
+     * @param context the context
+     * @param uri     the URI
+     * @param projection the projection
+     * @param selection the selection string
+     * @param selectionArgs the argument of the selection
+     * @param sortOrder the sort order for the output cusor
+     * @param limit the limit of this query
+     *
+     * @return the cursor
+     */
+    public static Cursor query(Context context, Uri uri, String[] projection,
+                               String selection, String[] selectionArgs, String sortOrder, int limit) {
+        try {
+            ContentResolver resolver = context.getContentResolver();
+            if (resolver == null) {
+                return null;
+            }
+            if (limit > 0) {
+                uri = uri.buildUpon().appendQueryParameter("limit", "" + limit).build();
+            }
+            return resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+        } catch (UnsupportedOperationException ex) {
+            return null;
+        }
+
+    }
+
+    /**
+     * Utils to query database.
+     *
+     * @param context the context
+     * @param uri     the URI
+     * @param projection the projection
+     * @param selection the selection string
+     * @param selectionArgs the argument of the selection
+     * @param sortOrder the sort order for the output cusor
+     *
+     * @return the cursor
+     */
+    public static Cursor query(Context context, Uri uri, String[] projection,
+                               String selection, String[] selectionArgs, String sortOrder) {
+        return query(context, uri, projection, selection, selectionArgs, sortOrder, 0);
+    }
+
+    /**
+     * M: Get the playlist id with given name.
+     *
+     * @param context context
+     * @param name playlist name
+     * @return playlist id with given name if exist, otherwise -1.
+     */
+    static int idForplaylist(Context context, String name) {
+        Cursor c = MusicUtils.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME},
+                /*MediaStore.Audio.Playlists.NAME + "=?"*/null,
+                /*new String[] { name }*/null,
+                MediaStore.Audio.Playlists.NAME);
+        int id = -1;
+        if (c == null) {
+            return id;
+        }
+        c.moveToFirst();
+        while (! c.isAfterLast()) {
+            String playlistname = c.getString(1);
+            if (playlistname != null && playlistname.compareToIgnoreCase(name) == 0) {
+                id = c.getInt(0);
+                break;
+            }
+            c.moveToNext();
+        }
+        c.close();
+        return id;
+    }
+
 
     /**
      * Class to connect the media playback service.
