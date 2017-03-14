@@ -1,6 +1,6 @@
 package com.greenorange.vimusic.repository;
 
-import com.greenorange.vimusic.mvp.model.Song;
+import com.greenorange.vimusic.mvp.model.Music;
 
 import java.util.List;
 
@@ -12,5 +12,7 @@ import rx.Observable;
 
 public interface Repository {
 
-    Observable<List<Song>> getAllSongs();
+    Observable<List<Music>> getAllSongs();
+
+    
 }

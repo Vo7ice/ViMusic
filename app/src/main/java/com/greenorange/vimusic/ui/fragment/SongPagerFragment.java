@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.greenorange.vimusic.Constants;
 import com.greenorange.vimusic.R;
+import com.greenorange.vimusic.mvp.contact.MusicContact;
+import com.greenorange.vimusic.mvp.presenter.MusicPresenter;
+import com.greenorange.vimusic.repository.RepositoryImpl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by guojin.hu on 2017/3/8.
  */
 
-public class SongPagerFragment extends PagerFragment {
+public class SongPagerFragment extends PagerFragment implements MusicContact.View {
 
 
     @BindView(R.id.image_empty)
@@ -29,6 +32,7 @@ public class SongPagerFragment extends PagerFragment {
     @BindView(R.id.view_empty)
     RelativeLayout mViewEmpty;
     private String mAction;
+    private MusicContact.Presenter mPresenter;
 
     public static PagerFragment newInstance(String action) {
         SongPagerFragment fragment = new SongPagerFragment();
@@ -48,14 +52,44 @@ public class SongPagerFragment extends PagerFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        RepositoryImpl repository = new RepositoryImpl(getContext(), mAction);
+        mPresenter = new MusicPresenter(repository);
+        mPresenter.attachView(this);
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.unSubscribe();
+    }
+
+    @Override
     public int getLayoutId() {
         return R.layout.fragment_all_songs;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(getLayoutId(), null);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @Override
+    public void setPresenter(MusicContact.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoadingIndicator(boolean force) {
+
+    }
+
+    @Override
+    public void showEmptyView() {
+
     }
 }

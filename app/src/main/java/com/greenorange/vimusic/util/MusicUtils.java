@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 
 import com.greenorange.vimusic.IMediaPlayBackService;
@@ -103,6 +104,71 @@ public class MusicUtils {
     }
 
     /**
+     * Get current album id.
+     *
+     * @return the current album id
+     */
+    public static long getCurrentAlbumId() {
+        if (sService != null) {
+            try {
+                return sService.getAlbumId();
+            } catch (RemoteException ex) {
+                MusicLogUtils.e(TAG, "Exception:" + ex);
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Get current artist id.
+     *
+     * @return the current artist id
+     */
+    public static long getCurrentArtistId() {
+        if (MusicUtils.sService != null) {
+            try {
+                return sService.getArtistId();
+            } catch (RemoteException ex) {
+                MusicLogUtils.e(TAG, "Exception:" + ex);
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Get current audio id.
+     *
+     * @return the current audio id
+     */
+    public static long getCurrentAudioId() {
+        if (MusicUtils.sService != null) {
+            try {
+                return sService.getAudioId();
+            } catch (RemoteException ex) {
+                MusicLogUtils.e(TAG, "Exception:" + ex);
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Get current shuffle mode.
+     *
+     * @return the current shuffle mode.
+     */
+    public static int getCurrentShuffleMode() {
+        int mode = 0;/* = MediaPlaybackService.SHUFFLE_NONE*/
+        if (sService != null) {
+            try {
+                mode = sService.getShuffleMode();
+            } catch (RemoteException ex) {
+                MusicLogUtils.e(TAG, "Exception:" + ex);
+            }
+        }
+        return mode;
+    }
+
+    /**
      * Utils to query database.
      *
      * @param context the context
@@ -150,7 +216,6 @@ public class MusicUtils {
     }
 
     /**
-     * M: Get the playlist id with given name.
      *
      * @param context context
      * @param name playlist name

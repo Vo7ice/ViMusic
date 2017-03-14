@@ -12,4 +12,8 @@ interface IMediaPlayBackService {
     void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
             double aDouble, String aString);
     void openFile(String path);
+    long getAlbumId();
+    long getArtistId();
+    long getAudioId();
+    int getShuffleMode();
 }
