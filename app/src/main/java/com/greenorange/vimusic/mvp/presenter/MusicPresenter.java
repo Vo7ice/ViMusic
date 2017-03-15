@@ -1,14 +1,11 @@
 package com.greenorange.vimusic.mvp.presenter;
 
 import com.greenorange.vimusic.mvp.contact.MusicContact;
-import com.greenorange.vimusic.mvp.model.Music;
 import com.greenorange.vimusic.repository.RepositoryImpl;
-
-import java.util.List;
+import com.greenorange.vimusic.util.MusicLogUtils;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -60,14 +57,17 @@ public class MusicPresenter implements MusicContact.Presenter {
         }
 
         mCompositeSubscription.clear();
-        Subscription subscription = mRepository.getAllSongs().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Music>>() {
-                    @Override
-                    public void call(List<Music> musics) {
-                        if (musics.isEmpty() || null == musics) {
-                            mView.showEmptyView();
-                        }
+        Subscription subscription = mRepository.getAllSongs()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(musics -> {
+                    if (null == musics || musics.isEmpty()) {
+                        mView.showEmptyView();
+                    } else{
+                        mView.updateUI(musics);
                     }
+                    MusicLogUtils.d("Vo7ice","size:"+musics.size());
                 });
+        mCompositeSubscription.add(subscription);
     }
 }

@@ -13,4 +13,5 @@
 
     <item name="disabled_alpha_material_light" format="float" type="dimen" tools:ignore="PrivateResource">0.26</item>
     <item name="disabled_alpha_material_dark" format="float" type="dimen" tools:ignore="PrivateResource">0.30</item>
+    <dimen name="item_music_height">68dp</dimen>
 </resources>

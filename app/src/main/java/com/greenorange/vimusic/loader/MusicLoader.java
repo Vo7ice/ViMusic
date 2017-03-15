@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.greenorange.vimusic.Constants;
 import com.greenorange.vimusic.mvp.model.Music;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by guojin.hu on 2017/3/13.
@@ -41,33 +41,31 @@ public class MusicLoader {
     }
 
     public static Observable<List<Music>> getSongsFromCursor(final Cursor cursor) {
-        return Observable.create(new Observable.OnSubscribe<List<Music>>() {
-            @Override
-            public void call(Subscriber<? super List<Music>> subscriber) {
-                List<Music> arrayList = new ArrayList<Music>();
-                if ((cursor != null) && (cursor.moveToFirst()))
-                    do {
-                        long id = cursor.getLong(0);
-                        String artist = cursor.getString(1);
-                        String album = cursor.getString(2);
-                        String title = cursor.getString(3);
-                        String path = cursor.getString(4);
-                        String type = cursor.getString(5);
-                        long albumId = cursor.getLong(6);
-                        long artistId = cursor.getLong(7);
-                        int is_podcast = cursor.getInt(8);
-                        int bookmark = cursor.getInt(9);
-                        int duration = cursor.getInt(10);
+        return Observable.create(subscriber -> {
+            List<Music> arrayList = new ArrayList<Music>();
+            if ((cursor != null) && (cursor.moveToFirst()))
+                do {
+                    long id = cursor.getLong(0);
+                    String artist = cursor.getString(1);
+                    String album = cursor.getString(2);
+                    String title = cursor.getString(3);
+                    String path = cursor.getString(4);
+                    String type = cursor.getString(5);
+                    long albumId = cursor.getLong(6);
+                    long artistId = cursor.getLong(7);
+                    int is_podcast = cursor.getInt(8);
+                    int bookmark = cursor.getInt(9);
+                    int duration = cursor.getInt(10);
 
-                        arrayList.add(new Music(id, artist, album, title, path, type, albumId, artistId, is_podcast, bookmark, duration));
-                    }
-                    while (cursor.moveToNext());
-                if (cursor != null) {
-                    cursor.close();
+                    arrayList.add(new Music(id, artist, album, title, path, type, albumId, artistId, is_podcast, bookmark, duration));
                 }
-                subscriber.onNext(arrayList);
-                subscriber.onCompleted();
+                while (cursor.moveToNext());
+            if (cursor != null) {
+                cursor.close();
             }
+            Log.d("Vo7ice","observable:"+arrayList.size());
+            subscriber.onNext(arrayList);
+            subscriber.onCompleted();
         });
     }
 

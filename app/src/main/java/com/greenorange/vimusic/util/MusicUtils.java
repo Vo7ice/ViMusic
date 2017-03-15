@@ -221,7 +221,7 @@ public class MusicUtils {
      * @param name playlist name
      * @return playlist id with given name if exist, otherwise -1.
      */
-    static int idForplaylist(Context context, String name) {
+    public static int idForplaylist(Context context, String name) {
         Cursor c = MusicUtils.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 new String[] { MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME},
                 /*MediaStore.Audio.Playlists.NAME + "=?"*/null,

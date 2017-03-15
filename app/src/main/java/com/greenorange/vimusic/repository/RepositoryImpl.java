@@ -17,6 +17,7 @@ import rx.Observable;
 public class RepositoryImpl implements Repository {
     private Context mContext;
     private String mAction;
+    private Observable<List<Music>> mCacheMusicList;
 
     public RepositoryImpl(Context context,String action) {
         mContext = context;
@@ -43,7 +44,8 @@ public class RepositoryImpl implements Repository {
             case Constants.ACTION_NAVIGATE_PLAYLIST_RECENT_PLAY:
                 break;
         }
-        return MusicLoader.getAllSongs(mContext);
+        mCacheMusicList = MusicLoader.getAllSongs(mContext);
+        return mCacheMusicList;
     }
 
     public void refreshMusics(){
